@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <meta content="The Sanctuary - A celestial space for capturing your logs and thoughts." name="description" />
+  <title>The Sanctuary - Captain's Log</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "tertiary-fixed-dim": "#dec48c",
+            "primary-container": "#2d0a7d",
+            "on-error": "#690005",
+            "on-background": "#e9def6",
+            "secondary-fixed": "#e9def9",
+            "on-surface": "#e9def6",
+            "on-tertiary-container": "#a58e5b",
+            "on-secondary": "#342d41",
+            "surface-variant": "#383244",
+            "on-tertiary": "#3e2e04",
+            "secondary-container": "#4d465b",
+            "error": "#ffb4ab",
+            "on-surface-variant": "#cbc4cf",
+            "on-tertiary-fixed": "#251a00",
+            "error-container": "#93000a",
+            "on-primary-fixed": "#1e0060",
+            "primary-fixed": "#e7deff",
+            "surface-container-highest": "#383244",
+            "secondary": "#cdc2dc",
+            "on-primary-fixed-variant": "#4b339b",
+            "on-primary-container": "#9680ec",
+            "background": "#161021",
+            "primary-fixed-dim": "#ccbeff",
+            "on-secondary-container": "#beb4cd",
+            "on-tertiary-fixed-variant": "#564419",
+            "on-secondary-fixed-variant": "#4b4358",
+            "surface-bright": "#3d3649",
+            "tertiary": "#dec48c",
+            "secondary-fixed-dim": "#cdc2dc",
+            "outline": "#948f99",
+            "surface-container-lowest": "#110b1c",
+            "inverse-primary": "#634db5",
+            "surface-dim": "#161021",
+            "surface-container": "#231d2e",
+            "surface-container-low": "#1f192a",
+            "inverse-surface": "#e9def6",
+            "surface": "#161021",
+            "on-primary": "#341784",
+            "on-secondary-fixed": "#1f182b",
+            "inverse-on-surface": "#342d40",
+            "outline-variant": "#49454e",
+            "on-error-container": "#ffdad6",
+            "tertiary-container": "#362700",
+            "surface-tint": "#ccbeff",
+            "surface-container-high": "#2d2739",
+            "tertiary-fixed": "#fbdfa6",
+            "primary": "#ccbeff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "1.5rem",
+            "full": "9999px"
+          },
+          "fontFamily": {
+            "headline": ["Manrope"],
+            "body": ["Manrope"],
+            "label": ["Manrope"]
+          }
+        },
+      },
+    }
+  </script>
+  <style>
+    body {
+      background-color: #161021;
+      font-family: 'Manrope', sans-serif;
+      min-height: max(884px, 100dvh);
+    }
+
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+
+    .celestial-glow {
+      box-shadow: 0px 64px 64px 0px rgba(233, 222, 246, 0.08);
+    }
+
+    .glass-panel {
+      background: rgba(56, 50, 68, 0.6);
+      backdrop-filter: blur(40px);
+    }
+
+    .btn-gradient {
+      background: linear-gradient(135deg, #CCBEFF 0%, #2D0A7D 100%);
+    }
+
+    /* Custom scrollbar for distraction-free area */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #383244;
+      border-radius: 10px;
+    }
+
+    .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+  </style>
+</head>
+
+<body class="bg-background min-h-screen flex items-center justify-center overflow-x-hidden">
+  <!-- Ambient Background Texture -->
+  <div class="fixed inset-0 z-0 pointer-events-none">
+    <canvas id="space-canvas" class="absolute inset-0 w-full h-full"></canvas>
+    <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary-container/20 rounded-full blur-[120px]">
+    </div>
+    <div
+      class="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-secondary-container/10 rounded-full blur-[150px]">
+    </div>
+    <div id="cursor-glow" class="fixed w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px] pointer-events-none -translate-x-1/2 -translate-y-1/2 z-[-1] opacity-0 transition-opacity duration-1000"></div>
+  </div>
+
+  <!-- AUTHENTICATED HEADER -->
+  <header id="app-header" class="fixed top-0 w-full z-50 bg-[#161021]/60 backdrop-blur-xl border-b border-outline-variant/5 flex items-center justify-between px-6 h-16 opacity-0 transition-opacity duration-1000 pointer-events-none">
+    <div class="flex items-center gap-4">
+        <button id="logout-btn" class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">logout</button>
+    </div>
+    <div class="text-lg font-bold text-[#CCBEFF] font-headline tracking-tighter truncate max-w-[60%]">
+        captain's log <span id="header-stardate">stardate</span>
+    </div>
+    <div class="w-10"></div> <!-- Spacer -->
+  </header>
+
+  <!-- AUTH LOADING STATE -->
+  <div id="auth-loader" class="fixed inset-0 z-50 flex items-center justify-center bg-background">
+    <span class="material-symbols-outlined text-primary text-4xl animate-spin" style="animation: spin 1.5s linear infinite;">progress_activity</span>
+  </div>
+  <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+
+  <!-- LOGIN VIEW -->
+  <main id="login-view" class="relative z-10 w-full max-w-[440px] px-6 transition-all duration-1000 hidden opacity-0">
+    <!-- The Celestial Anchor Card -->
+    <div
+      class="glass-panel border border-outline-variant/15 rounded-xl p-12 celestial-glow flex flex-col items-center text-center">
+      
+      <!-- Minimalist App Logo -->
+      <div class="mb-10 relative">
+        <div class="absolute inset-0 bg-primary/20 blur-2xl rounded-full scale-150 animate-pulse"></div>
+        <div
+          class="relative bg-surface-container-highest w-20 h-20 rounded-xl flex items-center justify-center border border-outline-variant/30 transition-transform duration-500 hover:rotate-6">
+          <span class="material-symbols-outlined text-4xl text-primary" data-icon="auto_stories"
+            style="font-variation-settings: 'FILL' 1;">auto_stories</span>
+        </div>
+      </div>
+
+      <!-- Branding -->
+      <div class="mb-12">
+        <h1 class="text-on-surface text-[2.75rem] font-extrabold tracking-tighter leading-tight font-headline">
+          captain's log stardate
+        </h1>
+        <p class="text-on-surface-variant text-lg font-light tracking-wide mt-2">
+          A space to capture logs even when you are not in space
+        </p>
+      </div>
+
+      <!-- Primary Action -->
+      <div class="w-full space-y-4">
+        <button
+          id="google-login-btn"
+          class="btn-gradient w-full py-4 px-6 rounded-xl flex items-center justify-center gap-4 group hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 shadow-xl shadow-primary-container/20">
+          <svg class="w-5 h-5 bg-white p-0.5 rounded-full" viewBox="0 0 24 24">
+            <path
+              d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+              fill="#4285F4"></path>
+            <path
+              d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+              fill="#34A853"></path>
+            <path
+              d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"
+              fill="#FBBC05"></path>
+            <path
+              d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 12-4.53z"
+              fill="#EA4335"></path>
+          </svg>
+          <span class="text-white text-sm font-bold uppercase tracking-widest font-label">
+            Continue with Google
+          </span>
+        </button>
+      </div>
+
+      <!-- Decorative Divider -->
+      <div class="mt-12 w-8 h-1 bg-gradient-to-r from-transparent via-outline-variant/40 to-transparent rounded-full">
+      </div>
+    </div>
+
+    <!-- Footer Accent -->
+    <div class="mt-12 text-center">
+      <span class="text-tertiary font-label text-xs tracking-[0.2em] uppercase opacity-60">
+        Free Use At Your Own Risk
+      </span>
+    </div>
+  </main>
+
+  <!-- ENTRY VIEW -->
+  <main id="entry-view" class="relative z-10 w-full max-w-2xl px-6 flex-col gap-12 hidden opacity-0 transition-all duration-1000 pointer-events-none">
+    <!-- Headline Section -->
+    <section class="text-center space-y-3 mt-24">
+        <h1 class="text-4xl md:text-5xl font-extrabold tracking-tighter text-on-surface font-headline">Capture the Moment</h1>
+        <p class="text-on-surface-variant font-medium tracking-wide uppercase text-xs opacity-60 font-body">Whisper your thoughts into the void</p>
+    </section>
+
+    <!-- WRITING AREA -->
+    <section class="relative group mt-12">
+        <div class="absolute -inset-1 bg-gradient-to-r from-primary-container/20 to-tertiary-container/30 rounded-xl blur opacity-25 group-focus-within:opacity-75 transition duration-1000"></div>
+        <div class="relative glass-panel border border-white/5 rounded-xl overflow-hidden min-h-[400px] flex flex-col shadow-2xl">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-white/5">
+                <span id="entry-id" class="text-xs font-bold tracking-[0.2em] text-on-surface-variant/60 uppercase">Sanctuary Entry No. ---</span>
+                <div class="flex gap-2">
+                    <span class="w-2 h-2 rounded-full bg-error/40"></span>
+                    <span class="w-2 h-2 rounded-full bg-tertiary/40"></span>
+                    <span class="w-2 h-2 rounded-full bg-primary/40"></span>
+                </div>
+            </div>
+            <textarea id="log-content"
+                class="flex-1 w-full bg-transparent p-8 text-on-surface placeholder:text-outline/40 border-none focus:ring-0 text-xl font-light leading-relaxed custom-scrollbar resize-none"
+                placeholder="Begin your reflection..."></textarea>
+        </div>
+    </section>
+
+    <!-- ACTIONS -->
+    <section class="flex flex-col sm:flex-row gap-4 items-center justify-between w-full mt-12 mb-24">
+        <button id="seal-btn"
+            class="w-full sm:w-auto bg-gradient-to-br from-primary to-primary-container px-12 py-4 rounded-xl text-on-primary font-extrabold tracking-[0.15em] text-sm uppercase shadow-xl shadow-primary/10 hover:shadow-primary/20 transition-all active:scale-95 duration-200 group">
+            <span class="flex items-center gap-2 justify-center">
+                Seal Entry
+                <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">send</span>
+            </span>
+        </button>
+        <a href="history.html" id="go-history-btn" class="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors group">
+            <span class="material-symbols-outlined transition-transform group-hover:rotate-12">history</span>
+            <span class="text-xs font-bold tracking-[0.15em] uppercase">Access History</span>
+        </a>
+    </section>
+  </main>
+
+
+  <!-- NOTIFICATIONS (TOAST) -->
+  <div id="toast" class="fixed bottom-12 left-1/2 -translate-x-1/2 z-[100] pointer-events-none opacity-0 transition-all duration-500 transform translate-y-4">
+    <div class="glass-panel border border-primary/20 bg-primary/10 backdrop-blur-2xl rounded-2xl px-8 py-4 flex items-center gap-4 shadow-[0_0_50px_rgba(204,190,255,0.15)]">
+        <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+            <span class="material-symbols-outlined text-primary text-xl">auto_awesome</span>
+        </div>
+        <p class="text-on-surface font-medium tracking-wide">Entry sealed in the stars.</p>
+    </div>
+  </div>
+
+  <!-- Visual Polish: Floating Atmosphere Elements -->
+  <div class="absolute bottom-12 left-12 opacity-30 select-none pointer-events-none hidden md:block" data-parallax="0.05">
+    <span class="material-symbols-outlined text-on-surface-variant text-4xl" data-icon="water_drop">water_drop</span>
+  </div>
+  <div class="absolute top-12 right-12 opacity-30 select-none pointer-events-none hidden md:block" data-parallax="-0.03">
+    <span class="material-symbols-outlined text-on-surface-variant text-4xl"
+      data-icon="filter_vintage">filter_vintage</span>
+  </div>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "firebase/app": "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js",
+        "firebase/auth": "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js",
+        "firebase/firestore": "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js"
+      }
+    }
+  </script>
+  <script type="module" src="main.js"></script>
+</body>
+
+</html>
